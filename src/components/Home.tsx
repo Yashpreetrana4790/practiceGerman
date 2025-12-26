@@ -29,6 +29,13 @@ export default function Home() {
             <p>Practice German verb conjugations by person (ich, du, er/sie/es, etc.)</p>
             <div className="card-arrow">→</div>
           </Link>
+
+          <Link to="/practice/verbs/typing" className="practice-card">
+            <div className="card-icon">⌨️</div>
+            <h2>Verb Typing Practice</h2>
+            <p>Type the correct German verb conjugation for different persons</p>
+            <div className="card-arrow">→</div>
+          </Link>
         </div>
       </div>
     </div>

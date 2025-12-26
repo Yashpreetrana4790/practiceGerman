@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import type { NounData } from '../types';
 import { fetchNounsData } from '../utils/sheetsData';
+import Toast from './Toast';
 import './NounTranslationPractice.css';
 
 export default function NounTranslationPractice() {
@@ -13,11 +14,9 @@ export default function NounTranslationPractice() {
   const [usedIndices, setUsedIndices] = useState<Set<number>>(new Set());
   const [score, setScore] = useState(0);
   const [totalAnswered, setTotalAnswered] = useState(0);
-  const [feedback, setFeedback] = useState<{ type: 'correct' | 'incorrect' | null; message: string }>({
-    type: null,
-    message: '',
-  });
+  const [toast, setToast] = useState<{ type: 'correct' | 'incorrect'; message: string } | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false);
 
   const loadData = async () => {
     try {
@@ -64,12 +63,11 @@ export default function NounTranslationPractice() {
 
       let selectedIndex: number;
       if (availableIndices.length === 0) {
-        // All nouns have been used, reset
-        selectedIndex = Math.floor(Math.random() * nouns.length);
-        setCurrentNoun(nouns[selectedIndex]);
-        const opts = generateOptions(nouns[selectedIndex].germanWord, nouns);
-        setOptions(opts);
-        return new Set([selectedIndex]);
+        // All nouns have been used, show completion screen
+        setIsCompleted(true);
+        setCurrentNoun(null);
+        setOptions([]);
+        return prevUsed;
       } else {
         selectedIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
         setCurrentNoun(nouns[selectedIndex]);
@@ -100,21 +98,41 @@ export default function NounTranslationPractice() {
 
     if (selectedGermanWord === currentNoun.germanWord) {
       setScore(prev => prev + 1);
-      setFeedback({
+      setToast({
         type: 'correct',
-        message: `Correct! "${currentNoun.noun}" in German is "${currentNoun.germanWord}".`,
+        message: `Correct! "${currentNoun.noun}" is "${currentNoun.germanWord}".`,
       });
     } else {
-      setFeedback({
+      setToast({
         type: 'incorrect',
-        message: `Incorrect. "${currentNoun.noun}" in German is "${currentNoun.germanWord}", not "${selectedGermanWord}".`,
+        message: `"${currentNoun.noun}" is "${currentNoun.germanWord}".`,
       });
     }
   };
 
   const handleNext = () => {
-    setFeedback({ type: null, message: '' });
+    setToast(null);
+    // Check if this was the last question
+    if (usedIndices.size + 1 >= nouns.length) {
+      setIsCompleted(true);
+      setCurrentNoun(null);
+      setOptions([]);
+      setIsAnswered(false);
+    } else {
+      setIsAnswered(false);
+      selectRandomNoun();
+    }
+  };
+
+  const handleRestart = () => {
+    setUsedIndices(new Set());
+    setCurrentNoun(null);
+    setOptions([]);
+    setScore(0);
+    setTotalAnswered(0);
+    setIsCompleted(false);
     setIsAnswered(false);
+    setToast(null);
     selectRandomNoun();
   };
 
@@ -145,6 +163,49 @@ export default function NounTranslationPractice() {
     );
   }
 
+  if (isCompleted) {
+    const percentage = totalAnswered > 0 ? Math.round((score / totalAnswered) * 100) : 0;
+    return (
+      <div className="practice-container">
+        <Link to="/" className="back-button">
+          ← Back to Home
+        </Link>
+        
+        <div className="completion-screen">
+          <div className="completion-card">
+            <div className="completion-icon">🎉</div>
+            <h1>Practice Complete!</h1>
+            <p className="completion-message">You've finished all the questions!</p>
+            
+            <div className="completion-stats">
+              <div className="stat-item">
+                <div className="stat-value">{score}</div>
+                <div className="stat-label">Correct</div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-value">{totalAnswered}</div>
+                <div className="stat-label">Total</div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-value">{percentage}%</div>
+                <div className="stat-label">Accuracy</div>
+              </div>
+            </div>
+
+            <div className="completion-actions">
+              <button className="restart-button" onClick={handleRestart}>
+                Practice Again
+              </button>
+              <Link to="/" className="home-button">
+                Back to Home
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!currentNoun || options.length === 0) {
     return (
       <div className="practice-container">
@@ -155,6 +216,14 @@ export default function NounTranslationPractice() {
 
   return (
     <div className="practice-container">
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+      
       <Link to="/" className="back-button">
         ← Back to Home
       </Link>
@@ -193,12 +262,6 @@ export default function NounTranslationPractice() {
             ))}
           </div>
 
-          {feedback.type && (
-            <div className={`feedback feedback-${feedback.type}`}>
-              <p>{feedback.message}</p>
-            </div>
-          )}
-
           {isAnswered && (
             <button className="next-button" onClick={handleNext}>
               Next Question
@@ -209,4 +272,6 @@ export default function NounTranslationPractice() {
     </div>
   );
 }
+
+
 

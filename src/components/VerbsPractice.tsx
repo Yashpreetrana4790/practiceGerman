@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import type { VerbData, Person } from '../types';
 import { fetchVerbsData } from '../utils/sheetsData';
+import Toast from './Toast';
 import './VerbsPractice.css';
 
 export default function VerbsPractice() {
@@ -12,10 +13,7 @@ export default function VerbsPractice() {
   const [usedIndices, setUsedIndices] = useState<Set<number>>(new Set());
   const [score, setScore] = useState(0);
   const [totalAnswered, setTotalAnswered] = useState(0);
-  const [feedback, setFeedback] = useState<{ type: 'correct' | 'incorrect' | null; message: string }>({
-    type: null,
-    message: '',
-  });
+  const [toast, setToast] = useState<{ type: 'correct' | 'incorrect'; message: string } | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
 
   const loadData = async () => {
@@ -72,20 +70,20 @@ export default function VerbsPractice() {
 
     if (selectedPerson === currentVerb.person) {
       setScore(prev => prev + 1);
-      setFeedback({
+      setToast({
         type: 'correct',
         message: `Correct! The conjugation "${currentVerb.conjugation}" is for "${currentVerb.person}".`,
       });
     } else {
-      setFeedback({
+      setToast({
         type: 'incorrect',
-        message: `Incorrect. The conjugation "${currentVerb.conjugation}" is for "${currentVerb.person}", not "${selectedPerson}".`,
+        message: `The conjugation "${currentVerb.conjugation}" is for "${currentVerb.person}".`,
       });
     }
   };
 
   const handleNext = () => {
-    setFeedback({ type: null, message: '' });
+    setToast(null);
     setIsAnswered(false);
     selectRandomVerb();
   };
@@ -129,6 +127,14 @@ export default function VerbsPractice() {
 
   return (
     <div className="practice-container">
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+      
       <Link to="/" className="back-button">
         ← Back to Home
       </Link>
@@ -172,12 +178,6 @@ export default function VerbsPractice() {
             ))}
           </div>
 
-          {feedback.type && (
-            <div className={`feedback feedback-${feedback.type}`}>
-              <p>{feedback.message}</p>
-            </div>
-          )}
-
           {isAnswered && (
             <button className="next-button" onClick={handleNext}>
               Next Question
@@ -188,4 +188,6 @@ export default function VerbsPractice() {
     </div>
   );
 }
+
+
 

@@ -13,12 +13,20 @@ export interface NounData {
 export type Person = 'ich' | 'du' | 'er/sie/es' | 'wir' | 'ihr' | 'sie/Sie';
 
 export interface VerbData {
-  srNo: number;
-  verb: string;
-  germanWord: string;
-  person: Person;
-  conjugation: string;
-  example: string;
+  infinitive: string;
+  meaning: string;
+  ich: string;
+  du: string;
+  'er/sie/es': string;
+  wir: string;
+  ihr: string;
+  'sie/Sie': string;
+  past: string;
+  pastParticiple: string;
+  auxiliary: string;
+  prepositions: string;
+  exampleSentence: string;
+  notes: string;
 }
 
 export interface PracticeState {

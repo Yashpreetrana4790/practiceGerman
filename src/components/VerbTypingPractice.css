@@ -81,96 +81,147 @@
   gap: 2rem;
 }
 
-.word-display {
+.question-display {
   text-align: center;
-  padding: 2rem;
+  padding: 2.5rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 16px;
   color: #fff;
   box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
 }
 
-.word-display h2 {
-  font-size: 2.5rem;
-  margin: 0 0 0.5rem 0;
-  color: #fff;
-  font-weight: 700;
-}
-
-.german-word {
-  font-size: 2rem;
-  font-weight: 600;
-  margin: 0.5rem 0;
-  color: rgba(255, 255, 255, 0.95);
-}
-
-.conjugation-display {
-  font-size: 1.8rem;
-  font-weight: 700;
-  margin-top: 1rem;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-}
-
-.question {
-  text-align: center;
-}
-
-.question p {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #2d3748;
-  margin: 0;
-}
-
-.options {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-}
-
-.option-button {
-  padding: 1.5rem 2rem;
+.prompt-text {
   font-size: 1.2rem;
+  margin: 0 0 1rem 0;
+  opacity: 0.9;
+}
+
+.meaning {
+  font-size: 2.5rem;
+  margin: 0.5rem 0;
+  font-weight: 800;
+  color: #fff;
+}
+
+.person-prompt {
+  font-size: 1.3rem;
+  margin: 1rem 0 0 0;
+  opacity: 0.9;
+}
+
+.person-highlight {
+  font-weight: 700;
+  font-size: 1.4rem;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.3rem 0.8rem;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+.input-form {
+  width: 100%;
+}
+
+.input-container {
+  display: flex;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.typing-input {
+  flex: 1;
+  padding: 1.5rem 1.5rem;
+  font-size: 1.5rem;
   font-weight: 600;
   border-radius: 16px;
-  border: 2px solid #e2e8f0;
+  border: 3px solid #e2e8f0;
   background: #fff;
   color: #2d3748;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  text-transform: capitalize;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  text-align: center;
+  font-family: inherit;
 }
 
-.option-button:hover:not(:disabled) {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
-  border-color: transparent;
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+.typing-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+  transform: scale(1.02);
 }
 
-.option-button:disabled {
+.typing-input:disabled {
   cursor: not-allowed;
   opacity: 0.8;
 }
 
-.option-button.correct {
-  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-  color: #fff;
-  border-color: transparent;
-  box-shadow: 0 8px 24px rgba(72, 187, 120, 0.4);
+.typing-input.correct {
+  border-color: #48bb78;
+  background: linear-gradient(135deg, rgba(72, 187, 120, 0.1) 0%, rgba(56, 161, 105, 0.1) 100%);
+  color: #2f855a;
 }
 
-.option-button.incorrect {
-  background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+.typing-input.incorrect {
+  border-color: #f56565;
+  background: linear-gradient(135deg, rgba(245, 101, 101, 0.1) 0%, rgba(229, 62, 62, 0.1) 100%);
+  color: #c53030;
+}
+
+.submit-button {
+  padding: 1.5rem 2.5rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-radius: 16px;
+  border: none;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: #fff;
-  border-color: transparent;
-  box-shadow: 0 8px 24px rgba(245, 101, 101, 0.4);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  white-space: nowrap;
+}
+
+.submit-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+}
+
+.submit-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.hint-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 12px;
+  border: 2px solid #cbd5e0;
+  background: transparent;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-self: center;
+}
+
+.hint-button:hover {
+  background: #f7fafc;
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.hint-box {
+  padding: 1rem 1.5rem;
+  background: #f7fafc;
+  border-radius: 12px;
+  border: 2px dashed #cbd5e0;
+  text-align: center;
+  animation: slideIn 0.3s ease;
+}
+
+.hint-box p {
+  margin: 0;
+  color: #4a5568;
+  font-size: 1rem;
 }
 
 .feedback {
@@ -195,7 +246,13 @@
 }
 
 .feedback p {
-  margin: 0;
+  margin: 0.5rem 0;
+}
+
+.correct-answer {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  opacity: 0.9;
 }
 
 .next-button {
@@ -229,11 +286,46 @@
   backdrop-filter: blur(10px);
 }
 
-.error {
-  color: #fff;
+.error h2 {
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
 }
 
-.error button {
+.error-instructions {
+  text-align: left;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.error-instructions p {
+  margin: 0.5rem 0;
+}
+
+.error-instructions ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.error-instructions li {
+  margin: 0.5rem 0;
+  line-height: 1.6;
+}
+
+.error-instructions code {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+}
+
+.error button,
+.retry-button {
   margin-top: 1rem;
   padding: 1rem 2rem;
   font-size: 1rem;
@@ -246,7 +338,8 @@
   font-weight: 600;
 }
 
-.error button:hover {
+.error button:hover,
+.retry-button:hover {
   background: rgba(255, 255, 255, 0.3);
 }
 
@@ -274,16 +367,16 @@
     padding: 2rem 1.5rem;
   }
 
-  .word-display h2 {
+  .meaning {
     font-size: 2rem;
   }
 
-  .german-word {
-    font-size: 1.5rem;
+  .person-prompt {
+    font-size: 1.1rem;
   }
 
-  .conjugation-display {
-    font-size: 1.4rem;
+  .person-highlight {
+    font-size: 1.2rem;
   }
 
   .stats {
@@ -292,17 +385,18 @@
     font-size: 1rem;
   }
 
-  .options {
-    grid-template-columns: 1fr;
+  .input-container {
+    flex-direction: column;
   }
 
-  .option-button {
-    padding: 1.2rem 1.5rem;
-    font-size: 1.1rem;
+  .typing-input {
+    font-size: 1.2rem;
+    padding: 1.2rem 1rem;
+  }
+
+  .submit-button {
+    width: 100%;
+    padding: 1.2rem;
   }
 }
-
-
-
-
 

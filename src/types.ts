@@ -35,4 +35,3 @@ export interface PracticeState {
   score: number;
   totalAnswered: number;
 }
-

@@ -25,16 +25,9 @@
   width: fit-content;
 }
 
-.back-button:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateX(-4px);
-}
+.back-button:hover { background: rgba(255, 255, 255, 0.3); transform: translateX(-4px); }
 
-.practice-header {
-  width: 100%;
-  text-align: center;
-  margin-bottom: 2rem;
-}
+.practice-header { width: 100%; text-align: center; margin-bottom: 2rem; }
 
 .practice-header h1 {
   font-size: 2.5rem;
@@ -65,21 +58,11 @@
 }
 
 @keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.card-content {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
+.card-content { display: flex; flex-direction: column; gap: 2rem; }
 
 .question-display {
   text-align: center;
@@ -90,24 +73,9 @@
   box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
 }
 
-.prompt-text {
-  font-size: 1.2rem;
-  margin: 0 0 1rem 0;
-  opacity: 0.9;
-}
-
-.meaning {
-  font-size: 2.5rem;
-  margin: 0.5rem 0;
-  font-weight: 800;
-  color: #fff;
-}
-
-.person-prompt {
-  font-size: 1.3rem;
-  margin: 1rem 0 0 0;
-  opacity: 0.9;
-}
+.prompt-text { font-size: 1.2rem; margin: 0 0 1rem 0; opacity: 0.9; }
+.meaning { font-size: 2.5rem; margin: 0.5rem 0; font-weight: 800; color: #fff; }
+.person-prompt { font-size: 1.3rem; margin: 1rem 0 0 0; opacity: 0.9; }
 
 .person-highlight {
   font-weight: 700;
@@ -118,19 +86,13 @@
   display: inline-block;
 }
 
-.input-form {
-  width: 100%;
-}
+.input-form { width: 100%; }
 
-.input-container {
-  display: flex;
-  gap: 1rem;
-  align-items: stretch;
-}
+.input-container { display: flex; gap: 1rem; align-items: stretch; }
 
 .typing-input {
   flex: 1;
-  padding: 1.5rem 1.5rem;
+  padding: 1.5rem;
   font-size: 1.5rem;
   font-weight: 600;
   border-radius: 16px;
@@ -142,17 +104,8 @@
   font-family: inherit;
 }
 
-.typing-input:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-  transform: scale(1.02);
-}
-
-.typing-input:disabled {
-  cursor: not-allowed;
-  opacity: 0.8;
-}
+.typing-input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1); }
+.typing-input:disabled { cursor: not-allowed; opacity: 0.8; }
 
 .typing-input.correct {
   border-color: #48bb78;
@@ -180,15 +133,8 @@
   white-space: nowrap;
 }
 
-.submit-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
-}
-
-.submit-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+.submit-button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4); }
+.submit-button:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .hint-button {
   padding: 0.75rem 1.5rem;
@@ -203,11 +149,7 @@
   align-self: center;
 }
 
-.hint-button:hover {
-  background: #f7fafc;
-  border-color: #667eea;
-  color: #667eea;
-}
+.hint-button:hover { background: #f7fafc; border-color: #667eea; color: #667eea; }
 
 .hint-box {
   padding: 1rem 1.5rem;
@@ -218,42 +160,7 @@
   animation: slideIn 0.3s ease;
 }
 
-.hint-box p {
-  margin: 0;
-  color: #4a5568;
-  font-size: 1rem;
-}
-
-.feedback {
-  padding: 1.5rem;
-  border-radius: 16px;
-  text-align: center;
-  font-weight: 600;
-  animation: slideIn 0.3s ease;
-  font-size: 1.1rem;
-}
-
-.feedback-correct {
-  background: linear-gradient(135deg, rgba(72, 187, 120, 0.1) 0%, rgba(56, 161, 105, 0.1) 100%);
-  border: 2px solid #48bb78;
-  color: #2f855a;
-}
-
-.feedback-incorrect {
-  background: linear-gradient(135deg, rgba(245, 101, 101, 0.1) 0%, rgba(229, 62, 62, 0.1) 100%);
-  border: 2px solid #f56565;
-  color: #c53030;
-}
-
-.feedback p {
-  margin: 0.5rem 0;
-}
-
-.correct-answer {
-  margin-top: 0.5rem;
-  font-size: 1rem;
-  opacity: 0.9;
-}
+.hint-box p { margin: 0; color: #4a5568; font-size: 1rem; }
 
 .next-button {
   padding: 1.25rem 2.5rem;
@@ -270,13 +177,9 @@
   box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
 }
 
-.next-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(102, 126, 234, 0.5);
-}
+.next-button:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(102, 126, 234, 0.5); }
 
-.loading,
-.error {
+.loading, .error {
   text-align: center;
   padding: 3rem;
   font-size: 1.3rem;
@@ -286,46 +189,9 @@
   backdrop-filter: blur(10px);
 }
 
-.error h2 {
-  margin: 0 0 1rem 0;
-  font-size: 1.5rem;
-}
+.error h2 { margin: 0 0 1rem 0; font-size: 1.5rem; }
 
-.error-instructions {
-  text-align: left;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 1.5rem;
-  border-radius: 12px;
-  margin: 1.5rem 0;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.error-instructions p {
-  margin: 0.5rem 0;
-}
-
-.error-instructions ol {
-  margin: 1rem 0;
-  padding-left: 1.5rem;
-}
-
-.error-instructions li {
-  margin: 0.5rem 0;
-  line-height: 1.6;
-}
-
-.error-instructions code {
-  background: rgba(0, 0, 0, 0.2);
-  padding: 0.2rem 0.4rem;
-  border-radius: 4px;
-  font-family: 'Courier New', monospace;
-  font-size: 0.9em;
-}
-
-.error button,
-.retry-button {
+.error button, .retry-button {
   margin-top: 1rem;
   padding: 1rem 2rem;
   font-size: 1rem;
@@ -334,69 +200,23 @@
   background: rgba(255, 255, 255, 0.2);
   color: #fff;
   cursor: pointer;
-  transition: all 0.3s ease;
   font-weight: 600;
 }
 
-.error button:hover,
-.retry-button:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
+.error button:hover, .retry-button:hover { background: rgba(255, 255, 255, 0.3); }
 
 @keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 768px) {
-  .practice-container {
-    padding: 1rem;
-  }
-
-  .practice-header h1 {
-    font-size: 2rem;
-  }
-
-  .card {
-    padding: 2rem 1.5rem;
-  }
-
-  .meaning {
-    font-size: 2rem;
-  }
-
-  .person-prompt {
-    font-size: 1.1rem;
-  }
-
-  .person-highlight {
-    font-size: 1.2rem;
-  }
-
-  .stats {
-    flex-direction: column;
-    gap: 0.5rem;
-    font-size: 1rem;
-  }
-
-  .input-container {
-    flex-direction: column;
-  }
-
-  .typing-input {
-    font-size: 1.2rem;
-    padding: 1.2rem 1rem;
-  }
-
-  .submit-button {
-    width: 100%;
-    padding: 1.2rem;
-  }
+  .practice-container { padding: 1rem; }
+  .practice-header h1 { font-size: 2rem; }
+  .stats { flex-direction: column; gap: 0.5rem; }
+  .card { padding: 2rem 1.5rem; }
+  .meaning { font-size: 2rem; }
+  .input-container { flex-direction: column; }
+  .typing-input { font-size: 1.2rem; padding: 1.2rem 1rem; }
+  .submit-button { width: 100%; padding: 1.2rem; }
 }
-

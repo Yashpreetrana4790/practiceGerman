@@ -109,57 +109,23 @@
 }
 
 @keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
 @media (max-width: 768px) {
-  .home-title {
-    font-size: 2.5rem;
-  }
-
-  .home-subtitle {
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
-  }
-
-  .practice-cards {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-
-  .practice-card {
-    padding: 2rem 1.5rem;
-  }
+  .home-title { font-size: 2.5rem; }
+  .home-subtitle { font-size: 1.2rem; margin-bottom: 2rem; }
+  .practice-cards { grid-template-columns: 1fr; gap: 1.5rem; }
+  .practice-card { padding: 2rem 1.5rem; }
 }
-
-
-
-
-

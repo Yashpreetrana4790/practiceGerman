@@ -5,11 +5,18 @@ import { fetchVerbsData } from '../utils/sheetsData';
 import Toast from './Toast';
 import './VerbsPractice.css';
 
+const PERSONS: Person[] = ['ich', 'du', 'er/sie/es', 'wir', 'ihr', 'sie/Sie'];
+
+function getConjugation(verb: VerbData, person: Person): string {
+  return verb[person];
+}
+
 export default function VerbsPractice() {
   const [verbs, setVerbs] = useState<VerbData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentVerb, setCurrentVerb] = useState<VerbData | null>(null);
+  const [currentPerson, setCurrentPerson] = useState<Person | null>(null);
   const [usedIndices, setUsedIndices] = useState<Set<number>>(new Set());
   const [score, setScore] = useState(0);
   const [totalAnswered, setTotalAnswered] = useState(0);
@@ -29,116 +36,63 @@ export default function VerbsPractice() {
     }
   };
 
-  const selectRandomVerb = useCallback(() => {
+  const selectNext = useCallback(() => {
     if (verbs.length === 0) return;
 
     setUsedIndices(prevUsed => {
-      const availableIndices = verbs
-        .map((_, index) => index)
-        .filter(index => !prevUsed.has(index));
+      const available = verbs.map((_, i) => i).filter(i => !prevUsed.has(i));
+      const idx = available.length === 0
+        ? Math.floor(Math.random() * verbs.length)
+        : available[Math.floor(Math.random() * available.length)];
 
-      if (availableIndices.length === 0) {
-        // All verbs have been used, reset
-        const randomIndex = Math.floor(Math.random() * verbs.length);
-        setCurrentVerb(verbs[randomIndex]);
-        return new Set([randomIndex]);
-      } else {
-        const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
-        setCurrentVerb(verbs[randomIndex]);
-        return new Set([...prevUsed, randomIndex]);
-      }
+      const randomPerson = PERSONS[Math.floor(Math.random() * PERSONS.length)];
+      setCurrentVerb(verbs[idx]);
+      setCurrentPerson(randomPerson);
+      setIsAnswered(false);
+      setToast(null);
+
+      return available.length === 0 ? new Set([idx]) : new Set([...prevUsed, idx]);
     });
   }, [verbs]);
 
-  // Load data on mount
-  useEffect(() => {
-    loadData();
-  }, []);
+  useEffect(() => { loadData(); }, []);
 
-  // Select a new random verb when data is loaded
   useEffect(() => {
-    if (verbs.length > 0 && currentVerb === null) {
-      selectRandomVerb();
-    }
-  }, [verbs, currentVerb, selectRandomVerb]);
+    if (verbs.length > 0 && currentVerb === null) selectNext();
+  }, [verbs, currentVerb, selectNext]);
 
   const handleAnswer = (selectedPerson: Person) => {
-    if (!currentVerb || isAnswered) return;
+    if (!currentVerb || !currentPerson || isAnswered) return;
 
     setIsAnswered(true);
     setTotalAnswered(prev => prev + 1);
+    const conjugation = getConjugation(currentVerb, currentPerson);
 
-    if (selectedPerson === currentVerb.person) {
+    if (selectedPerson === currentPerson) {
       setScore(prev => prev + 1);
-      setToast({
-        type: 'correct',
-        message: `Correct! The conjugation "${currentVerb.conjugation}" is for "${currentVerb.person}".`,
-      });
+      setToast({ type: 'correct', message: `Correct! "${conjugation}" is for "${currentPerson}".` });
     } else {
-      setToast({
-        type: 'incorrect',
-        message: `The conjugation "${currentVerb.conjugation}" is for "${currentVerb.person}".`,
-      });
+      setToast({ type: 'incorrect', message: `"${conjugation}" is for "${currentPerson}".` });
     }
   };
 
   const handleNext = () => {
     setToast(null);
     setIsAnswered(false);
-    selectRandomVerb();
+    selectNext();
   };
 
-  if (loading) {
-    return (
-      <div className="practice-container">
-        <div className="loading">Loading verbs data...</div>
-      </div>
-    );
-  }
+  if (loading) return <div className="practice-container"><div className="loading">Loading verbs data...</div></div>;
+  if (error) return <div className="practice-container"><div className="error"><p>Error: {error}</p><button onClick={loadData}>Retry</button></div></div>;
+  if (verbs.length === 0) return <div className="practice-container"><div className="error">No verbs data available.</div></div>;
+  if (!currentVerb || !currentPerson) return <div className="practice-container"><div className="loading">Preparing practice...</div></div>;
 
-  if (error) {
-    return (
-      <div className="practice-container">
-        <div className="error">
-          <p>Error: {error}</p>
-          <button onClick={loadData}>Retry</button>
-        </div>
-      </div>
-    );
-  }
-
-  if (verbs.length === 0) {
-    return (
-      <div className="practice-container">
-        <div className="error">No verbs data available.</div>
-      </div>
-    );
-  }
-
-  if (!currentVerb) {
-    return (
-      <div className="practice-container">
-        <div className="loading">Preparing practice...</div>
-      </div>
-    );
-  }
-
-  const personOptions: Person[] = ['ich', 'du', 'er/sie/es', 'wir', 'ihr', 'sie/Sie'];
+  const conjugation = getConjugation(currentVerb, currentPerson);
 
   return (
     <div className="practice-container">
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
-      
-      <Link to="/" className="back-button">
-        ← Back to Home
-      </Link>
-      
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+      <Link to="/" className="back-button">← Back to Home</Link>
       <div className="practice-header">
         <h1>German Verb Conjugation Practice</h1>
         <div className="stats">
@@ -146,30 +100,19 @@ export default function VerbsPractice() {
           <span>Remaining: {verbs.length - usedIndices.size}</span>
         </div>
       </div>
-
       <div className="card">
         <div className="card-content">
           <div className="word-display">
-            <h2>{currentVerb.verb}</h2>
-            <p className="german-word">{currentVerb.germanWord}</p>
-            <p className="conjugation-display">{currentVerb.conjugation}</p>
+            <p className="verb-meaning">{currentVerb.meaning}</p>
+            <h2>{conjugation}</h2>
+            <p className="verb-infinitive">({currentVerb.infinitive})</p>
           </div>
-
-          <div className="question">
-            <p>What person is this conjugation for?</p>
-          </div>
-
+          <div className="question"><p>Which person uses this conjugation?</p></div>
           <div className="options">
-            {personOptions.map((person) => (
+            {PERSONS.map((person) => (
               <button
                 key={person}
-                className={`option-button ${
-                  isAnswered
-                    ? person === currentVerb.person
-                      ? 'correct'
-                      : 'incorrect'
-                    : ''
-                }`}
+                className={`option-button ${isAnswered ? (person === currentPerson ? 'correct' : 'incorrect') : ''}`}
                 onClick={() => handleAnswer(person)}
                 disabled={isAnswered}
               >
@@ -177,17 +120,9 @@ export default function VerbsPractice() {
               </button>
             ))}
           </div>
-
-          {isAnswered && (
-            <button className="next-button" onClick={handleNext}>
-              Next Question
-            </button>
-          )}
+          {isAnswered && <button className="next-button" onClick={handleNext}>Next Question</button>}
         </div>
       </div>
     </div>
   );
 }
-
-
-

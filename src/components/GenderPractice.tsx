@@ -34,33 +34,24 @@ export default function GenderPractice() {
     if (nouns.length === 0) return;
 
     setUsedIndices(prevUsed => {
-      const availableIndices = nouns
-        .map((_, index) => index)
-        .filter(index => !prevUsed.has(index));
+      const availableIndices = nouns.map((_, i) => i).filter(i => !prevUsed.has(i));
 
       if (availableIndices.length === 0) {
-        // All nouns have been used, show completion screen
         setIsCompleted(true);
         setCurrentNoun(null);
         return prevUsed;
-      } else {
-        const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
-        setCurrentNoun(nouns[randomIndex]);
-        return new Set([...prevUsed, randomIndex]);
       }
+
+      const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+      setCurrentNoun(nouns[randomIndex]);
+      return new Set([...prevUsed, randomIndex]);
     });
   }, [nouns]);
 
-  // Load data on mount
-  useEffect(() => {
-    loadData();
-  }, []);
+  useEffect(() => { loadData(); }, []);
 
-  // Select a new random noun when data is loaded
   useEffect(() => {
-    if (nouns.length > 0 && currentNoun === null) {
-      selectRandomNoun();
-    }
+    if (nouns.length > 0 && currentNoun === null) selectRandomNoun();
   }, [nouns, currentNoun, selectRandomNoun]);
 
   const handleAnswer = (selectedGender: Gender) => {
@@ -71,29 +62,16 @@ export default function GenderPractice() {
 
     if (selectedGender === currentNoun.gender) {
       setScore(prev => prev + 1);
-      setToast({
-        type: 'correct',
-        message: `Correct! ${currentNoun.article} ${currentNoun.germanWord} is ${currentNoun.gender}.`,
-      });
+      setToast({ type: 'correct', message: `Correct! ${currentNoun.article} ${currentNoun.germanWord} is ${currentNoun.gender}.` });
     } else {
-      setToast({
-        type: 'incorrect',
-        message: `${currentNoun.article} ${currentNoun.germanWord} is ${currentNoun.gender}.`,
-      });
+      setToast({ type: 'incorrect', message: `${currentNoun.article} ${currentNoun.germanWord} is ${currentNoun.gender}.` });
     }
   };
 
   const handleNext = () => {
     setToast(null);
-    // Check if this was the last question
-    if (usedIndices.size + 1 >= nouns.length) {
-      setIsCompleted(true);
-      setCurrentNoun(null);
-      setIsAnswered(false);
-    } else {
-      setIsAnswered(false);
-      selectRandomNoun();
-    }
+    setIsAnswered(false);
+    selectRandomNoun();
   };
 
   const handleRestart = () => {
@@ -104,72 +82,30 @@ export default function GenderPractice() {
     setIsCompleted(false);
     setIsAnswered(false);
     setToast(null);
-    selectRandomNoun();
   };
 
-  if (loading) {
-    return (
-      <div className="practice-container">
-        <div className="loading">Loading nouns data...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="practice-container">
-        <div className="error">
-          <p>Error: {error}</p>
-          <button onClick={loadData}>Retry</button>
-        </div>
-      </div>
-    );
-  }
-
-  if (nouns.length === 0) {
-    return (
-      <div className="practice-container">
-        <div className="error">No nouns data available.</div>
-      </div>
-    );
-  }
+  if (loading) return <div className="practice-container"><div className="loading">Loading nouns data...</div></div>;
+  if (error) return <div className="practice-container"><div className="error"><p>Error: {error}</p><button onClick={loadData}>Retry</button></div></div>;
+  if (nouns.length === 0) return <div className="practice-container"><div className="error">No nouns data available.</div></div>;
 
   if (isCompleted) {
     const percentage = totalAnswered > 0 ? Math.round((score / totalAnswered) * 100) : 0;
     return (
       <div className="practice-container">
-        <Link to="/" className="back-button">
-          ← Back to Home
-        </Link>
-        
+        <Link to="/" className="back-button">← Back to Home</Link>
         <div className="completion-screen">
           <div className="completion-card">
             <div className="completion-icon">🎉</div>
             <h1>Practice Complete!</h1>
             <p className="completion-message">You've finished all the questions!</p>
-            
             <div className="completion-stats">
-              <div className="stat-item">
-                <div className="stat-value">{score}</div>
-                <div className="stat-label">Correct</div>
-              </div>
-              <div className="stat-item">
-                <div className="stat-value">{totalAnswered}</div>
-                <div className="stat-label">Total</div>
-              </div>
-              <div className="stat-item">
-                <div className="stat-value">{percentage}%</div>
-                <div className="stat-label">Accuracy</div>
-              </div>
+              <div className="stat-item"><div className="stat-value">{score}</div><div className="stat-label">Correct</div></div>
+              <div className="stat-item"><div className="stat-value">{totalAnswered}</div><div className="stat-label">Total</div></div>
+              <div className="stat-item"><div className="stat-value">{percentage}%</div><div className="stat-label">Accuracy</div></div>
             </div>
-
             <div className="completion-actions">
-              <button className="restart-button" onClick={handleRestart}>
-                Practice Again
-              </button>
-              <Link to="/" className="home-button">
-                Back to Home
-              </Link>
+              <button className="restart-button" onClick={handleRestart}>Practice Again</button>
+              <Link to="/" className="home-button">Back to Home</Link>
             </div>
           </div>
         </div>
@@ -177,30 +113,14 @@ export default function GenderPractice() {
     );
   }
 
-  if (!currentNoun) {
-    return (
-      <div className="practice-container">
-        <div className="loading">Preparing practice...</div>
-      </div>
-    );
-  }
+  if (!currentNoun) return <div className="practice-container"><div className="loading">Preparing practice...</div></div>;
 
   const genderOptions: Gender[] = ['Masculine', 'Feminine', 'Neutral'];
 
   return (
     <div className="practice-container">
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
-      
-      <Link to="/" className="back-button">
-        ← Back to Home
-      </Link>
-
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+      <Link to="/" className="back-button">← Back to Home</Link>
       <div className="practice-header">
         <h1>German Noun Gender Practice</h1>
         <div className="stats">
@@ -208,28 +128,18 @@ export default function GenderPractice() {
           <span>Remaining: {nouns.length - usedIndices.size}</span>
         </div>
       </div>
-
       <div className="card">
         <div className="card-content">
           <div className="noun-display">
             <h2>{currentNoun.noun}</h2>
             <p className="german-word">{currentNoun.germanWord}</p>
           </div>
-
-          <div className="question">
-            <p>What is the gender of this noun?</p>
-          </div>
-
+          <div className="question"><p>What is the gender of this noun?</p></div>
           <div className="options">
             {genderOptions.map((gender) => (
               <button
                 key={gender}
-                className={`option-button ${isAnswered
-                  ? gender === currentNoun.gender
-                    ? 'correct'
-                    : 'incorrect'
-                  : ''
-                  }`}
+                className={`option-button ${isAnswered ? (gender === currentNoun.gender ? 'correct' : 'incorrect') : ''}`}
                 onClick={() => handleAnswer(gender)}
                 disabled={isAnswered}
               >
@@ -237,15 +147,9 @@ export default function GenderPractice() {
               </button>
             ))}
           </div>
-
-          {isAnswered && (
-            <button className="next-button" onClick={handleNext}>
-              Next Question
-            </button>
-          )}
+          {isAnswered && <button className="next-button" onClick={handleNext}>Next Question</button>}
         </div>
       </div>
     </div>
   );
 }
-

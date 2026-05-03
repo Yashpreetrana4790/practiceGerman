@@ -25,16 +25,9 @@
   width: fit-content;
 }
 
-.back-button:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateX(-4px);
-}
+.back-button:hover { background: rgba(255, 255, 255, 0.3); transform: translateX(-4px); }
 
-.practice-header {
-  width: 100%;
-  text-align: center;
-  margin-bottom: 2rem;
-}
+.practice-header { width: 100%; text-align: center; margin-bottom: 2rem; }
 
 .practice-header h1 {
   font-size: 2.5rem;
@@ -65,21 +58,11 @@
 }
 
 @keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.card-content {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
+.card-content { display: flex; flex-direction: column; gap: 2rem; }
 
 .word-display {
   text-align: center;
@@ -90,41 +73,12 @@
   box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
 }
 
-.word-display h2 {
-  font-size: 2.5rem;
-  margin: 0 0 0.5rem 0;
-  color: #fff;
-  font-weight: 700;
-}
+.verb-meaning { font-size: 1.1rem; margin: 0 0 0.5rem 0; opacity: 0.85; }
+.word-display h2 { font-size: 2.5rem; margin: 0.25rem 0; color: #fff; font-weight: 700; }
+.verb-infinitive { font-size: 1rem; margin: 0.5rem 0 0 0; opacity: 0.75; }
 
-.german-word {
-  font-size: 2rem;
-  font-weight: 600;
-  margin: 0.5rem 0;
-  color: rgba(255, 255, 255, 0.95);
-}
-
-.conjugation-display {
-  font-size: 1.8rem;
-  font-weight: 700;
-  margin-top: 1rem;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-}
-
-.question {
-  text-align: center;
-}
-
-.question p {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #2d3748;
-  margin: 0;
-}
+.question { text-align: center; }
+.question p { font-size: 1.3rem; font-weight: 600; color: #2d3748; margin: 0; }
 
 .options {
   display: grid;
@@ -154,10 +108,7 @@
   box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
 }
 
-.option-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.8;
-}
+.option-button:disabled { cursor: not-allowed; opacity: 0.8; }
 
 .option-button.correct {
   background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
@@ -171,31 +122,6 @@
   color: #fff;
   border-color: transparent;
   box-shadow: 0 8px 24px rgba(245, 101, 101, 0.4);
-}
-
-.feedback {
-  padding: 1.5rem;
-  border-radius: 16px;
-  text-align: center;
-  font-weight: 600;
-  animation: slideIn 0.3s ease;
-  font-size: 1.1rem;
-}
-
-.feedback-correct {
-  background: linear-gradient(135deg, rgba(72, 187, 120, 0.1) 0%, rgba(56, 161, 105, 0.1) 100%);
-  border: 2px solid #48bb78;
-  color: #2f855a;
-}
-
-.feedback-incorrect {
-  background: linear-gradient(135deg, rgba(245, 101, 101, 0.1) 0%, rgba(229, 62, 62, 0.1) 100%);
-  border: 2px solid #f56565;
-  color: #c53030;
-}
-
-.feedback p {
-  margin: 0;
 }
 
 .next-button {
@@ -213,13 +139,9 @@
   box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
 }
 
-.next-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(102, 126, 234, 0.5);
-}
+.next-button:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(102, 126, 234, 0.5); }
 
-.loading,
-.error {
+.loading, .error {
   text-align: center;
   padding: 3rem;
   font-size: 1.3rem;
@@ -227,10 +149,6 @@
   background: rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   backdrop-filter: blur(10px);
-}
-
-.error {
-  color: #fff;
 }
 
 .error button {
@@ -242,67 +160,19 @@
   background: rgba(255, 255, 255, 0.2);
   color: #fff;
   cursor: pointer;
-  transition: all 0.3s ease;
   font-weight: 600;
 }
 
-.error button:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
 @keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 768px) {
-  .practice-container {
-    padding: 1rem;
-  }
-
-  .practice-header h1 {
-    font-size: 2rem;
-  }
-
-  .card {
-    padding: 2rem 1.5rem;
-  }
-
-  .word-display h2 {
-    font-size: 2rem;
-  }
-
-  .german-word {
-    font-size: 1.5rem;
-  }
-
-  .conjugation-display {
-    font-size: 1.4rem;
-  }
-
-  .stats {
-    flex-direction: column;
-    gap: 0.5rem;
-    font-size: 1rem;
-  }
-
-  .options {
-    grid-template-columns: 1fr;
-  }
-
-  .option-button {
-    padding: 1.2rem 1.5rem;
-    font-size: 1.1rem;
-  }
+  .practice-container { padding: 1rem; }
+  .practice-header h1 { font-size: 2rem; }
+  .stats { flex-direction: column; gap: 0.5rem; }
+  .card { padding: 2rem 1.5rem; }
+  .options { grid-template-columns: 1fr; }
+  .option-button { padding: 1.2rem 1.5rem; font-size: 1.1rem; }
 }
-
-
-
-
-

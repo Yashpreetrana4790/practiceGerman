@@ -1,8 +1,18 @@
 import type { NounData, Gender, VerbData } from '../types';
 
 const SHEET_ID = '1j1YiF4Vj33guXhIJm1DkJDUJQX_HNKPDUSmNrpooADw';
-const NOUNS_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
-const VERBS_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=1459632609`;
+
+function sheetUrl(gid: string): string {
+  const path = `/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;
+  // In dev, route through vite proxy to avoid redirect issues
+  if (import.meta.env.DEV) {
+    return `/sheets-proxy${path}`;
+  }
+  return `https://docs.google.com${path}`;
+}
+
+const NOUNS_CSV_URL = sheetUrl('0');
+const VERBS_CSV_URL = sheetUrl('1459632609');
 
 function normalizeGender(gender: string): Gender {
   const normalized = gender.trim();
@@ -44,7 +54,7 @@ function parseCSV(csvText: string): NounData[] {
   const headers = parseCSVLine(lines[0]).map(h => h.replace(/^"|"$/g, '').trim().toLowerCase());
 
   const srNoIndex = headers.findIndex(h => h.includes('sr no') || h.includes('srno') || h === 'sr no.');
-  const nounIndex = headers.findIndex(h => h === 'noun');
+  const nounIndex = headers.findIndex(h => h === 'noun' || h === 'english meaning' || (h.includes('english') && h.includes('meaning')));
   const germanWordIndex = headers.findIndex(h => h.includes('german') && h.includes('word'));
   const articleIndex = headers.findIndex(h => h === 'article');
   const genderIndex = headers.findIndex(h => h === 'gender');
@@ -84,7 +94,7 @@ function parseVerbsCSV(csvText: string): VerbData[] {
   const headersLower = headers.map(h => h.toLowerCase());
 
   const infinitiveIndex = headersLower.findIndex(h => h === 'infinitive');
-  const meaningIndex = headersLower.findIndex(h => h === 'meaning');
+  const meaningIndex = headersLower.findIndex(h => h === 'meaning' || h.includes('english'));
   const ichIndex = headersLower.findIndex(h => h === 'ich');
   const duIndex = headersLower.findIndex(h => h === 'du');
   const erSieEsIndex = headersLower.findIndex(h =>
@@ -144,14 +154,21 @@ function parseVerbsCSV(csvText: string): VerbData[] {
   return verbs;
 }
 
-export async function fetchNounsData(): Promise<NounData[]> {
-  const response = await fetch(NOUNS_CSV_URL);
+async function fetchCSV(url: string): Promise<string> {
+  const response = await fetch(url);
   if (!response.ok) throw new Error(`Failed to fetch data: ${response.statusText}`);
-  return parseCSV(await response.text());
+  const text = await response.text();
+  // Detect HTML response (auth redirect / private sheet)
+  if (text.trimStart().startsWith('<')) {
+    throw new Error('Google Sheet is not publicly accessible. Make sure the sheet is shared as "Anyone with the link can view".');
+  }
+  return text;
+}
+
+export async function fetchNounsData(): Promise<NounData[]> {
+  return parseCSV(await fetchCSV(NOUNS_CSV_URL));
 }
 
 export async function fetchVerbsData(): Promise<VerbData[]> {
-  const response = await fetch(VERBS_CSV_URL);
-  if (!response.ok) throw new Error(`Failed to fetch data: ${response.statusText}`);
-  return parseVerbsCSV(await response.text());
+  return parseVerbsCSV(await fetchCSV(VERBS_CSV_URL));
 }

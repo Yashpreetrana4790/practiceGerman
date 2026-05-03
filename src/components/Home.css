@@ -8,50 +8,107 @@
 }
 
 .home-content {
-  max-width: 1200px;
+  max-width: 1100px;
   width: 100%;
   text-align: center;
 }
 
 .home-title {
-  font-size: 4rem;
+  font-size: 3.5rem;
   font-weight: 800;
   color: #fff;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   animation: fadeInDown 0.6s ease;
 }
 
 .home-subtitle {
-  font-size: 1.5rem;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 4rem;
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 2rem;
+  animation: fadeInUp 0.6s ease 0.1s both;
+}
+
+/* Article colour legend */
+.article-legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
   animation: fadeInUp 0.6s ease 0.2s both;
 }
 
+.legend-intro {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-right: 0.25rem;
+}
+
+.legend-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 1rem;
+  border-radius: 24px;
+  border: 2px solid;
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.legend-art {
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.legend-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+}
+
+.legend-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.legend-example {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+/* Practice cards */
 .practice-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  animation: fadeInUp 0.6s ease 0.4s both;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  animation: fadeInUp 0.6s ease 0.3s both;
 }
 
 .practice-card {
   position: relative;
   background: rgba(255, 255, 255, 0.95);
-  border-radius: 24px;
-  padding: 3rem 2rem;
+  border-radius: 20px;
+  padding: 2rem 1.75rem 3rem;
   text-decoration: none;
   color: #333;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  cursor: pointer;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .practice-card::before {
@@ -60,15 +117,16 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
+  height: 3px;
   background: linear-gradient(90deg, #667eea, #764ba2);
   transform: scaleX(0);
   transition: transform 0.3s ease;
+  transform-origin: left;
 }
 
 .practice-card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  transform: translateY(-6px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
 }
 
 .practice-card:hover::before {
@@ -76,20 +134,32 @@
 }
 
 .card-icon {
-  font-size: 4rem;
-  margin-bottom: 1.5rem;
-  animation: bounce 2s infinite;
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.card-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #764ba2;
+  background: rgba(118, 75, 162, 0.1);
+  border: 1px solid rgba(118, 75, 162, 0.2);
+  border-radius: 20px;
+  padding: 0.2rem 0.6rem;
+  margin-bottom: 0.75rem;
 }
 
 .practice-card h2 {
-  font-size: 1.75rem;
+  font-size: 1.3rem;
   font-weight: 700;
-  margin-bottom: 1rem;
-  color: #2d3748;
+  margin-bottom: 0.5rem;
+  color: #1a202c;
 }
 
 .practice-card p {
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   color: #4a5568;
   line-height: 1.6;
   flex-grow: 1;
@@ -97,35 +167,49 @@
 
 .card-arrow {
   position: absolute;
-  bottom: 2rem;
-  right: 2rem;
-  font-size: 2rem;
-  color: #667eea;
-  transition: transform 0.3s ease;
+  bottom: 1.25rem;
+  right: 1.5rem;
+  font-size: 1.5rem;
+  color: #764ba2;
+  opacity: 0.5;
+  transition: all 0.3s ease;
 }
 
 .practice-card:hover .card-arrow {
-  transform: translateX(8px);
+  opacity: 1;
+  transform: translateX(4px);
+}
+
+.home-tip {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.9rem;
+  animation: fadeInUp 0.6s ease 0.4s both;
+}
+
+.home-tip kbd {
+  display: inline-block;
+  padding: 0.1rem 0.4rem;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.85rem;
 }
 
 @keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-30px); }
+  from { opacity: 0; transform: translateY(-20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
 @media (max-width: 768px) {
-  .home-title { font-size: 2.5rem; }
-  .home-subtitle { font-size: 1.2rem; margin-bottom: 2rem; }
-  .practice-cards { grid-template-columns: 1fr; gap: 1.5rem; }
-  .practice-card { padding: 2rem 1.5rem; }
+  .home-title { font-size: 2.25rem; }
+  .home-subtitle { font-size: 1rem; }
+  .practice-cards { grid-template-columns: 1fr; gap: 1rem; }
+  .article-legend { gap: 0.5rem; }
+  .legend-pill { padding: 0.4rem 0.75rem; }
 }

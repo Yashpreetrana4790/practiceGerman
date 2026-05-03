@@ -2,8 +2,9 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import type { VerbData, Person } from '../types';
 import { fetchVerbsData } from '../utils/sheetsData';
-import Toast from './Toast';
 import './VerbTypingPractice.css';
+
+const PERSONS: Person[] = ['ich', 'du', 'er/sie/es', 'wir', 'ihr', 'sie/Sie'];
 
 export default function VerbTypingPractice() {
   const [verbs, setVerbs] = useState<VerbData[]>([]);
@@ -15,144 +16,159 @@ export default function VerbTypingPractice() {
   const [usedIndices, setUsedIndices] = useState<Set<number>>(new Set());
   const [score, setScore] = useState(0);
   const [totalAnswered, setTotalAnswered] = useState(0);
-  const [toast, setToast] = useState<{ type: 'correct' | 'incorrect'; message: string } | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const loadData = async () => {
     try {
-      setLoading(true);
-      setError(null);
-      const data = await fetchVerbsData();
-      setVerbs(data);
+      setLoading(true); setError(null);
+      setVerbs(await fetchVerbsData());
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load data');
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
-  const getPersonConjugation = (verb: VerbData, person: Person): string => verb[person];
-
-  const selectRandomVerbAndPerson = useCallback(() => {
+  const selectNext = useCallback(() => {
     if (verbs.length === 0) return;
-
     setUsedIndices(prevUsed => {
       const available = verbs.map((_, i) => i).filter(i => !prevUsed.has(i));
       const idx = available.length === 0
         ? Math.floor(Math.random() * verbs.length)
         : available[Math.floor(Math.random() * available.length)];
-
-      const persons: Person[] = ['ich', 'du', 'er/sie/es', 'wir', 'ihr', 'sie/Sie'];
-      const randomPerson = persons[Math.floor(Math.random() * persons.length)];
-
       setCurrentVerb(verbs[idx]);
-      setCurrentPerson(randomPerson);
+      setCurrentPerson(PERSONS[Math.floor(Math.random() * PERSONS.length)]);
       setUserInput('');
       setIsAnswered(false);
-      setToast(null);
       setShowHint(false);
-
-      setTimeout(() => inputRef.current?.focus(), 100);
-
+      setTimeout(() => inputRef.current?.focus(), 80);
       return available.length === 0 ? new Set([idx]) : new Set([...prevUsed, idx]);
     });
   }, [verbs]);
 
   useEffect(() => { loadData(); }, []);
-
-  useEffect(() => {
-    if (verbs.length > 0 && currentVerb === null) selectRandomVerbAndPerson();
-  }, [verbs, currentVerb, selectRandomVerbAndPerson]);
+  useEffect(() => { if (verbs.length > 0 && currentVerb === null) selectNext(); }, [verbs, currentVerb, selectNext]);
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!currentVerb || !currentPerson || isAnswered || !userInput.trim()) return;
-
-    const correctAnswer = getPersonConjugation(currentVerb, currentPerson);
-    const isCorrect = userInput.trim().toLowerCase() === correctAnswer.toLowerCase();
-
+    const correct = currentVerb[currentPerson];
+    const isCorrect = userInput.trim().toLowerCase() === correct.toLowerCase();
     setIsAnswered(true);
     setTotalAnswered(prev => prev + 1);
-
-    if (isCorrect) {
-      setScore(prev => prev + 1);
-      setToast({ type: 'correct', message: `Correct! "${correctAnswer}" is right.` });
-    } else {
-      setToast({ type: 'incorrect', message: `The correct answer is "${correctAnswer}".` });
-    }
+    if (isCorrect) setScore(prev => prev + 1);
   };
 
-  const handleNext = () => {
-    setToast(null);
-    setIsAnswered(false);
-    setUserInput('');
-    setShowHint(false);
-    selectRandomVerbAndPerson();
-  };
+  const handleNext = useCallback(() => {
+    setIsAnswered(false); setUserInput(''); setShowHint(false); selectNext();
+  }, [selectNext]);
 
-  if (loading) return <div className="practice-container"><div className="loading">Loading verbs data...</div></div>;
-  if (error) return <div className="practice-container"><div className="error"><p>Error: {error}</p><button onClick={loadData}>Retry</button></div></div>;
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (isAnswered && e.key === 'Enter') { e.preventDefault(); handleNext(); }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [isAnswered, handleNext]);
+
+  if (loading) return <div className="practice-container"><div className="loading">Loading verbs…</div></div>;
+  if (error) return <div className="practice-container"><div className="error"><p>{error}</p><button onClick={loadData}>Retry</button></div></div>;
   if (verbs.length === 0 && !loading) return (
     <div className="practice-container">
-      <Link to="/" className="back-button">← Back to Home</Link>
-      <div className="error"><h2>No verbs data available</h2><p>Check the browser console for details.</p><button onClick={loadData} className="retry-button">Retry</button></div>
+      <Link to="/" className="back-button">← Back</Link>
+      <div className="error"><h2>No verbs data</h2><p>Check browser console for details.</p><button onClick={loadData}>Retry</button></div>
     </div>
   );
-  if (!currentVerb || !currentPerson) return <div className="practice-container"><div className="loading">Preparing practice...</div></div>;
+  if (!currentVerb || !currentPerson) return <div className="practice-container"><div className="loading">Preparing…</div></div>;
 
-  const correctAnswer = getPersonConjugation(currentVerb, currentPerson);
+  const correctAnswer = currentVerb[currentPerson];
+  const isCorrect = isAnswered && userInput.trim().toLowerCase() === correctAnswer.toLowerCase();
+  const progress = Math.round((Math.min(usedIndices.size, verbs.length) / verbs.length) * 100);
 
   return (
     <div className="practice-container">
-      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
-      <Link to="/" className="back-button">← Back to Home</Link>
-      <div className="practice-header">
-        <h1>Verb Conjugation Typing</h1>
-        <div className="stats">
-          <span>Score: {score}/{totalAnswered}</span>
-          <span>Remaining: {verbs.length - usedIndices.size}</span>
-        </div>
+      <div className="top-bar">
+        <Link to="/" className="back-button">← Back</Link>
+        <div className="session-score">{score} / {totalAnswered}</div>
       </div>
+
+      <div className="progress-bar-container">
+        <div className="progress-bar-fill" style={{ width: `${progress}%` }} />
+        <span className="progress-label">{Math.min(usedIndices.size, verbs.length)} / {verbs.length}</span>
+      </div>
+
       <div className="card">
-        <div className="card-content">
-          <div className="question-display">
-            <div className="prompt">
-              <p className="prompt-text">Type the word for</p>
-              <h2 className="meaning">{currentVerb.meaning}</h2>
-              <p className="person-prompt">for <span className="person-highlight">{currentPerson}</span></p>
-            </div>
+        <div className="verb-prompt">
+          <p className="prompt-text">Type the conjugation of</p>
+          <h2 className="prompt-meaning">{currentVerb.meaning}</h2>
+          <div className="prompt-person">
+            for <span className="person-tag">{currentPerson}</span>
           </div>
-          <form onSubmit={handleSubmit} className="input-form">
-            <div className="input-container">
-              <input
-                ref={inputRef}
-                type="text"
-                value={userInput}
-                onChange={(e) => setUserInput(e.target.value)}
-                placeholder="Type your answer..."
-                className={`typing-input ${isAnswered ? (userInput.trim().toLowerCase() === correctAnswer.toLowerCase() ? 'correct' : 'incorrect') : ''}`}
-                disabled={isAnswered}
-                autoFocus
-                autoComplete="off"
-                spellCheck={false}
-              />
-              {!isAnswered && (
-                <button type="submit" className="submit-button" disabled={!userInput.trim()}>Check</button>
-              )}
-            </div>
-          </form>
-          {!isAnswered && (
-            <button className="hint-button" onClick={() => setShowHint(!showHint)}>
-              {showHint ? 'Hide Hint' : 'Show Hint'}
-            </button>
-          )}
-          {showHint && !isAnswered && (
-            <div className="hint-box"><p>The infinitive is: <strong>{currentVerb.infinitive}</strong></p></div>
-          )}
-          {isAnswered && <button className="next-button" onClick={handleNext}>Continue</button>}
         </div>
+
+        <form onSubmit={handleSubmit} className="input-form">
+          <div className="input-row">
+            <input
+              ref={inputRef}
+              type="text"
+              value={userInput}
+              onChange={e => setUserInput(e.target.value)}
+              placeholder="Type here…"
+              className={`typing-input ${isAnswered ? (isCorrect ? 'input-correct' : 'input-wrong') : ''}`}
+              disabled={isAnswered}
+              autoFocus
+              autoComplete="off"
+              spellCheck={false}
+            />
+            {!isAnswered && (
+              <button type="submit" className="submit-btn" disabled={!userInput.trim()}>Check</button>
+            )}
+          </div>
+        </form>
+
+        {!isAnswered && (
+          <button className="hint-toggle" onClick={() => setShowHint(v => !v)}>
+            {showHint ? 'Hide hint' : 'Show hint'}
+          </button>
+        )}
+        {showHint && !isAnswered && (
+          <div className="hint-box">Infinitive: <strong>{currentVerb.infinitive}</strong></div>
+        )}
+
+        {isAnswered && (
+          <div className={`conjugation-table ${isCorrect ? 'table-correct' : 'table-wrong'}`}>
+            <div className="table-header">
+              <span className="table-verdict">
+                {isCorrect ? '✅ Correct!' : `❌ Correct answer: "${correctAnswer}"`}
+              </span>
+              <span className="table-title">{currentVerb.infinitive} — full conjugation</span>
+            </div>
+            <div className="conj-grid">
+              {PERSONS.map(p => (
+                <div key={p} className={`conj-row ${p === currentPerson ? 'conj-highlight' : ''}`}>
+                  <span className="conj-person">{p}</span>
+                  <span className="conj-form">{currentVerb[p]}</span>
+                  {p === currentPerson && <span className="conj-mark">{isCorrect ? '✓' : '←'}</span>}
+                </div>
+              ))}
+            </div>
+            {(currentVerb.past || currentVerb.pastParticiple) && (
+              <div className="conj-extras">
+                {currentVerb.past && <span><strong>Past:</strong> {currentVerb.past}</span>}
+                {currentVerb.pastParticiple && <span><strong>Participle:</strong> {currentVerb.pastParticiple} ({currentVerb.auxiliary})</span>}
+              </div>
+            )}
+            {currentVerb.exampleSentence && (
+              <p className="conj-example">"{currentVerb.exampleSentence}"</p>
+            )}
+          </div>
+        )}
+
+        {isAnswered && (
+          <button className="next-button" onClick={handleNext}>
+            Continue <span className="key-hint">Enter ↵</span>
+          </button>
+        )}
       </div>
     </div>
   );

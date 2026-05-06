@@ -41,11 +41,6 @@ Desktop.ini
 *.bak
 *.backup
 
-# Package manager lock files (optional - uncomment if you want to ignore them)
-# package-lock.json
-# yarn.lock
-# pnpm-lock.yaml
+
+.code-review-graph/
 config.bat
-temp_auto_push.bat
-temp_interactive_push.bat
->>>>>>> b0712935c599661e5e89968adc6832672e40626a
